@@ -1,0 +1,84 @@
+#include "stdafx.h"
+#include <memory>
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+namespace monster
+{
+
+	class Monster {
+	private:
+		string m_strName;
+	public:
+		Monster() = default;
+
+		explicit Monster(const string& strName)
+		{
+			m_strName = strName;
+		}
+
+		~Monster() = default;
+		
+		const string& GetName() const noexcept
+		{
+			return m_strName;
+		}
+
+		void SetName(const string& strName)
+		{
+			m_strName = strName;
+		}
+
+		int Attack()
+		{
+			printf("%s가 공격했다!\n", m_strName.c_str());
+			return 0;
+		}
+
+		int Move()
+		{
+			printf("%s가 이동했다!\n", m_strName.c_str());
+			return 0;
+		}
+
+	};
+}
+
+namespace monster
+{
+	class Spider : public Monster
+	{
+	public:
+		Spider() = default;
+
+		using Monster::Monster;
+
+		~Spider() = default;
+
+		int Climb()
+		{
+			printf("%s가 기어오르고 있다!\n", GetName().c_str());
+			return 0;
+		}
+	};
+}
+
+int main()
+{
+	unique_ptr<monster::Monster> pMonster = make_unique<monster::Monster>("몬스터");
+	unique_ptr<monster::Spider> pSpider = make_unique<monster::Spider>("거미");
+
+	pMonster->Attack();
+	pMonster->Move();
+	//pMonster->Climb();
+
+	cout << endl;
+
+	pSpider->Attack();
+	pSpider->Move();
+	pSpider->Climb();
+
+	return 0;
+}

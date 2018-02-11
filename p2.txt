@@ -1,0 +1,50 @@
+#include "stdafx.h"
+#include <cassert>
+#include <iostream>
+#include <memory>
+
+using namespace std;
+
+class Data
+{
+public:
+	Data() = default;
+	explicit Data(int num)
+	{
+		m_num = num;
+	}
+	~Data() = default;
+
+	int GetNum() const noexcept
+	{
+		return m_num;
+	}
+private:
+	int m_num;
+};
+
+
+int main()
+{
+	unique_ptr<Data> pUniqueData = make_unique<Data>(200);
+	assert(pUniqueData);
+
+	Data* pOriginal = pUniqueData.get();
+	assert(pOriginal);
+
+	//unique_ptr<Data> pNewUniqueData = pUniqueData;
+
+	unique_ptr<Data> pNewUniqueData = move(pUniqueData);
+	assert(pNewUniqueData);
+
+	//printf("pUniqueData의 역참조값 : %d\n", pUniqueData->GetNum());
+	printf("pOriginal의 역참조값 : %d\n", pOriginal->GetNum());
+	printf("pNewUniqueData의 역참조값 : %d\n", pNewUniqueData->GetNum());
+
+	cout << &pUniqueData << endl;
+	cout << &pOriginal << endl;
+	cout << &pNewUniqueData << endl;
+
+	return 0;
+
+}

@@ -1,0 +1,62 @@
+#include "stdafx.h"
+#include <iostream>
+#include <ctime>
+#include <random>
+
+using namespace std;
+
+enum class GameState : int
+{
+	INIT,
+	TITLE,
+	OPTION,
+	SCENE,
+	PAUSE,
+	RELEASE,
+	NONE,
+};
+
+GameState g_gameState = GameState::NONE;
+
+void GameStateCheck();
+
+
+int main()
+{
+	uniform_int_distribution<int> randomValue(0, 6);
+	default_random_engine randomEngine;
+
+	time_t oldTime = clock();
+	time_t newTime = clock();
+
+	for (;;) {
+
+		newTime = clock();
+
+		if (newTime - oldTime > 2000)
+		{
+			oldTime = newTime;
+
+			g_gameState = static_cast<GameState>(randomValue(randomEngine));
+			GameStateCheck();
+		}
+	}
+
+	return 0;
+
+}
+
+void GameStateCheck()
+{
+	switch (g_gameState)
+	{
+	case GameState::INIT: printf("게임 초기화 중입니다.\n"); break;
+	case GameState::TITLE: printf("게임 타이틀 중입니다.\n"); break;
+	case GameState::OPTION: printf("게임 옵션 중입니다.\n"); break;
+	case GameState::SCENE: printf("게임 장면 중입니다.\n"); break;
+	case GameState::PAUSE: printf("게임 정지 중입니다.\n"); break;
+	case GameState::RELEASE: printf("게임 해제 중입니다.\n"); break;
+	}
+
+	return;
+}

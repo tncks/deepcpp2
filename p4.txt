@@ -1,0 +1,130 @@
+#include "stdafx.h"
+#include <memory>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <cassert>
+
+using namespace std;
+
+namespace monster
+{
+
+	class Monster {
+	private:
+		string m_strName;
+	public:
+		Monster() = default;
+
+		explicit Monster(const string& strName)
+		{
+			m_strName = strName;
+		}
+
+		~Monster() = default;
+		
+		const string& GetName() const noexcept
+		{
+			return m_strName;
+		}
+
+		void SetName(const string& strName)
+		{
+			m_strName = strName;
+		}
+
+		int Attack()
+		{
+			printf("%s가 공격했다!\n", m_strName.c_str());
+			return 0;
+		}
+
+		int Move()
+		{
+			printf("%s가 이동했다!\n", m_strName.c_str());
+			return 0;
+		}
+
+		virtual int UpdateAction()
+		{
+			Attack();
+			Move();
+			return 0;
+		}
+
+	};
+}
+
+namespace monster
+{
+	class Spider : public Monster
+	{
+	public:
+		Spider() = default;
+
+		using Monster::Monster;
+
+		~Spider() = default;
+
+		int Climb()
+		{
+			printf("%s가 기어오르고 있다!\n", GetName().c_str());
+			return 0;
+		}
+
+		virtual int UpdateAction()
+		{
+			Attack();
+			Climb();
+			return 0;
+		}
+	};
+}
+
+namespace monster
+{
+	class Slime : public Monster
+	{
+	public:
+		Slime() = default;
+
+		using Monster::Monster;
+
+		~Slime() = default;
+
+		int Jump()
+		{
+			printf("%s가 뛰어오르고 있다!\n", GetName().c_str());
+			return 0;
+		}
+
+		virtual int UpdateAction()
+		{
+			Attack();
+			Jump();
+			return 0;
+		}
+	};
+}
+
+int main()
+{
+	vector<shared_ptr<monster::Monster>> vecMonster;
+
+	vecMonster.push_back(make_shared<monster::Spider>("거미"));
+	vecMonster.push_back(make_shared< monster::Slime>("슬라임"));
+
+
+		for (shared_ptr<monster::Monster> enemy : vecMonster)
+		{
+			assert(enemy != nullptr);
+			if (enemy == nullptr) break;
+			enemy->UpdateAction();
+		}
+
+
+	cout << endl <<  "정찰 종료" << endl;
+
+
+	return 0;
+}

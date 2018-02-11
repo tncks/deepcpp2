@@ -1,0 +1,69 @@
+#include "stdafx.h"
+#include <memory>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <cassert>
+
+using namespace std;
+
+namespace mgr
+{
+	class IOManager
+	{
+	public:
+
+		static string m_strLastFileName;
+
+		IOManager() = default;
+		~IOManager() = default;
+
+		static int AppendStringToFile(const string& strFileName, const string& strText);
+
+		static const string& GetLastFileName() noexcept
+		{
+			return m_strLastFileName;
+		}
+	};
+}
+
+namespace mgr
+{
+	string IOManager::m_strLastFileName = "NoFileName";
+
+	int IOManager::AppendStringToFile(const string& strFileName, const string& strText)
+	{
+		FILE* pFile = fopen(strFileName.c_str(), "at");
+		assert(pFile != nullptr);
+
+		if (pFile == nullptr) perror("파일 스트림 생성 실패!");
+
+		fprintf(pFile, "%s\n", strText.c_str());
+
+		fclose(pFile);
+
+		m_strLastFileName = strFileName;
+
+		return 0;
+	}
+
+}
+
+int main()
+{
+	using namespace mgr;
+
+	IOManager::AppendStringToFile("Game.log", "게임 초기화!");
+	printf("최근 작업한 파일 이름 : %s\n", IOManager::GetLastFileName().c_str());
+
+	IOManager::AppendStringToFile("Error.log", "게임 초기화 실패!");
+	printf("최근 작업한 파일 이름 : %s\n", IOManager::GetLastFileName().c_str());
+
+	IOManager::AppendStringToFile("Game.log", "게임 종료 !");
+	printf("최근 작업한 파일 이름 : %s\n", IOManager::GetLastFileName().c_str());
+
+	cout << endl << "출력 종료 ! " << endl; 
+
+	return 0;
+
+}

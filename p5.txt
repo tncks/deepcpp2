@@ -1,0 +1,82 @@
+#include "stdafx.h"
+#include <memory>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <cassert>
+
+using namespace std;
+
+namespace core
+{
+	class CoreInterface abstract
+	{
+	public:
+		CoreInterface() = default;
+		virtual ~CoreInterface() = default;
+
+		virtual int Init() = 0;
+		virtual int Release() = 0;
+
+		virtual int Update() { return 0; }
+	};
+}
+
+namespace stage
+{
+	class StageBase : public core::CoreInterface
+	{
+	public:
+		StageBase() = default;
+		virtual ~StageBase()
+		{
+			Release();
+		}
+
+		virtual int Init() override;
+
+		virtual int Update() override;
+
+	private:
+
+		virtual int Release() override;
+	};
+}
+
+namespace stage
+{
+	int StageBase::Init()
+	{
+		printf("스테이지 초기화!\n");
+		return 0;
+	}
+
+	int StageBase::Update()
+	{
+		printf("스테이지 갱신!!\n");
+		return 0;
+	}
+
+	int StageBase::Release()
+	{
+		printf("스테이지 소멸!\n");
+		return 0;
+	}
+}
+
+int main()
+{
+	unique_ptr<stage::StageBase> pStageBase = make_unique<stage::StageBase>();
+
+	pStageBase->Init();
+
+	for (int i = 0; i < 4; ++i)
+	{
+		pStageBase->Update();
+	}
+
+	//pStageBase->Release();
+
+	return 0;
+
+}
